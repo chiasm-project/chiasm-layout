@@ -1,2 +1,3 @@
 # chiasm-layout
-A nested box layout plugin for Chiasm.
+
+Nested box layout for Chiasm components.

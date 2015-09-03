@@ -1,0 +1,25 @@
+{
+  "name": "chiasm-layout",
+  "version": "0.2.0",
+  "description": "Nested box layout for Chiasm components.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chiasm-project/chiasm-layout.git"
+  },
+  "keywords": [
+    "DOM",
+    "layout",
+    "box",
+    "dashboard"
+  ],
+  "author": "Curran Kelleher",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chiasm-project/chiasm-layout/issues"
+  },
+  "homepage": "https://github.com/chiasm-project/chiasm-layout"
+}

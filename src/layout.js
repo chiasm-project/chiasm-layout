@@ -1,5 +1,6 @@
 var ChiasmComponent = require("chiasm-component");
 var None = require("model-js").None;
+var computeLayout = require("./computeLayout");
 
 function Layout(chiasm){
 
@@ -72,16 +73,11 @@ function Layout(chiasm){
   });
 
   // Computes which aliases are referenced in the given layout.
-  function aliasesInLayout(layout){
-    var aliases = [];
-    if(isLeafNode(layout)){
-      aliases.push(layout);
-    } else {
-      layout.children.forEach(function(child){
-        aliases.push.apply(aliases, aliasesInLayout(child));
-      });
-    }
-    return aliases;
+  function aliasesInLayout(layout, sizes){
+    return Object.keys(computeLayout(layout, sizes, {
+      width: 100,
+      height: 100
+    }));
   }
   
   function removeAllChildren(parent){
@@ -92,12 +88,12 @@ function Layout(chiasm){
 
 
   // Handle DOM management for components.
-  my.when(["container", "layout"], function(container, layout){
+  my.when(["container", "layout", "sizes"], function(container, layout, sizes){
 
     removeAllChildren(container);
 
     // Add the DOM elements for each component to the container.
-    var aliases = aliasesInLayout(layout);
+    var aliases = aliasesInLayout(layout, sizes);
     aliases.forEach(function (alias){
       chiasm.getComponent(alias).then(function (component){
         if(!component.el){

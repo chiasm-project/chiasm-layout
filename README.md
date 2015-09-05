@@ -3,7 +3,7 @@
 [![Build
 Status](https://travis-ci.org/chiasm-project/chiasm-layout.svg)](https://travis-ci.org/chiasm-project/chiasm-layout)
 
-Nested box layout for Chiasm components.
+Nested box layout for [Chiasm](https://github.com/chiasm-project/chiasm) components.
 
 ![Boxes](http://curran.github.io/images/visEditor/boxes.png)
 

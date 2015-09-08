@@ -22,7 +22,7 @@ function Layout(chiasm){
 
       my.container = document.querySelector(containerSelector);
 
-      // Initialize `my.box`.
+      // Initialize `my.box` based on the container size.
       setBox();
     }
   });
@@ -52,22 +52,46 @@ function Layout(chiasm){
     var boxes = computeLayout(layout, sizes, box);
 
     Object.keys(boxes).forEach(function (alias){
+
+      // Annotate the DOM so it is clear what each element corresponds to
+      // for developers inspecting the DOM.
+      var domClass = "chiasm-component-" + alias;
+
       chiasm.getComponent(alias).then(function (component){
+
+        var box = boxes[alias];
 
         // Pass the box into the component so it can resize its content
         // using box.width and box.height.
-        component.box = boxes[alias];
+        component.box = box;
 
-        d3.select(component.el)
+        // Set the (x, y) box offset on the component's DOM element.
+        if(component.el){
 
-          // Use CSS `position: absolute;` so setting `left` and `top` CSS
-          // properties later will position the SVG relative to the parent container.
-          .style("position", "absolute")
+          if(component.el instanceof SVGGraphicsElement){
 
-          // Set the CSS `left` and `top` properties to move the
-          // SVG to `(box.x, box.y)` relative to the parent container.
-          .style("left", component.box.x + "px")
-          .style("top", component.box.y + "px");
+            // Use SVG transform property to position SVG component elements.
+            d3.select(component.el)
+              .attr("transform", "translate(" + box.x + "," + box.y + ")")
+              .classed(domClass, true);
+
+          } else {
+
+            // Use CSS to position non-SVG component elements (e.g. <div/>).
+            d3.select(component.el)
+
+              // Use CSS `position: absolute;` so setting `left` and `top` CSS
+              // properties later will position the SVG relative to the parent container.
+              .style("position", "absolute")
+
+              // Set the CSS `left` and `top` properties to move the
+              // SVG to `(box.x, box.y)` relative to the parent container.
+              .style("left", box.x + "px")
+              .style("top", box.y + "px")
+              .classed(domClass, true);
+
+          }
+        }
       });
     });
   });
@@ -92,17 +116,40 @@ function Layout(chiasm){
 
     removeAllChildren(container);
 
+    var containerDIV = d3.select(container)
+      .append("div")
+      .attr("class", "chiasm-container-for-non-svg-elements");
+
+    var containerSVG = d3.select(container)
+      .append("svg")
+      .attr("class", "chiasm-container-for-svg-elements")
+
+    my.containerSVG = containerSVG;
+
     // Add the DOM elements for each component to the container.
     var aliases = aliasesInLayout(layout, sizes);
     aliases.forEach(function (alias){
       chiasm.getComponent(alias).then(function (component){
+
         if(!component.el){
-          throw new Error("Every component referenced in layout must have a DOM element 'el' defined. " +
-            "Component with alias " + alias + " has no 'el'.");
+          throw new Error("Every component referenced in layout must have a DOM " + 
+            "element 'el' defined. Component with alias " + alias + 
+            " has no 'el' property defined.");
         }
-        container.appendChild(component.el);
+
+        if(component.el instanceof SVGGraphicsElement){
+          containerSVG.node().appendChild(component.el);
+        } else {
+          containerDIV.node().appendChild(component.el);
+        }
       });
     });
+  });
+  
+  my.when(["containerSVG", "box"], function(containerSVG, box){
+    containerSVG
+      .attr("width", box.width)
+      .attr("height", box.height);
   });
 
   // Return the public API.

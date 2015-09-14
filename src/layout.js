@@ -1,6 +1,7 @@
 var ChiasmComponent = require("chiasm-component");
 var None = require("model-js").None;
 var computeLayout = require("./computeLayout");
+var _ = require("lodash");
 
 function Layout(chiasm){
 

@@ -1,5 +1,4 @@
 // chiasm-layout.js
-// v__VERSION__
 // github.com/chiasm-project/chiasm-layout
 //
 // This is a Chiasm plugin for nested box layout.

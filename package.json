@@ -4,7 +4,7 @@
   "description": "Nested box layout for Chiasm components.",
   "main": "index.js",
   "scripts": {
-    "pretest": "browserify -o chiasm-layout.js -s ChiasmLayout index.js",
+    "pretest": "browserify -g browserify-shim -o chiasm-layout.js -s ChiasmLayout index.js",
     "test": "mocha",
     "prepublish": "npm test"
   },
@@ -27,24 +27,18 @@
   "devDependencies": {
     "browserify": "^11.0.1",
     "browserify-shim": "^3.8.10",
-    "browserify-versionify": "^1.0.6",
     "chai": "^3.2.0",
     "chiasm": "^0.1.9",
     "jsdom": "3.1.2",
     "mocha": "^2.3.0"
   },
   "dependencies": {
-    "chiasm-component": "^0.2.0",
+    "chiasm-component": "^0.2.2",
     "lodash": "^3.10.1",
     "model-js": "^0.2.4"
   },
-  "browserify": {
-    "transform": [
-      "browserify-shim",
-      "browserify-versionify"
-    ]
-  },
   "browserify-shim": {
+    "lodash": "global:_",
     "chiasm-component": "global:ChiasmComponent",
     "model-js": "global:Model"
   }

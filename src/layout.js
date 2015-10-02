@@ -2,6 +2,7 @@ var ChiasmComponent = require("chiasm-component");
 var None = require("model-js").None;
 var computeLayout = require("./computeLayout");
 var _ = require("lodash");
+var d3 = require("d3");
 
 function Layout(chiasm){
 
@@ -39,6 +40,8 @@ function Layout(chiasm){
       };
     }
   }
+
+  my.when("container", setBox);
 
   // Add this guard here so unit tests can run in Node.
   if (typeof window !== "undefined"){

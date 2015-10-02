@@ -43,11 +43,17 @@ function expectValues(chiasm, values, callback){
 }
 
 function initChiasm(){
-  var div = document.createElement("div");
-  var chiasm = Chiasm(div);
+  var chiasm = Chiasm();
 
-  // Set the width and height that the layout will use.
-  div.clientHeight = div.clientWidth = 100;
+  chiasm.plugins.layout = require("../index");
+  chiasm.plugins.dummyVis = Model;
+
+  // Mock the DOM container using jsdom.
+  chiasm.getComponent("layout").then(function (layout){
+    var div = document.createElement("div");
+    div.clientHeight = div.clientWidth = 100;
+    layout.container = div;
+  });
 
   return chiasm;
 }
@@ -127,14 +133,16 @@ describe("plugins/layout", function () {
           layout: {
             orientation: "horizontal",
             children: ["a", "b"]
+          },
+          sizes: {
+            a: {
+              size: "40px"
+            }
           }
         }
       },
       a: {
-        plugin: "dummyVis",
-        state: {
-          size: "40px"
-        }
+        plugin: "dummyVis"
       },
       b: {
         plugin: "dummyVis"
@@ -144,56 +152,5 @@ describe("plugins/layout", function () {
       "a.box.width": 40,
       "b.box.width": 60
     }, done);
-  });
-
-  // This tests that the layout plugin is listening for changes
-  // in the "size" property of each component in the layout.
-
-  // TODO refactor layout plugin to REMOVE THIS FEATURE
-  // The layout should be specified purely in the layout component,
-  // not spread across "size" properties in component configurations.
-  it("should compute from size changed within component", function(done) {
-    var chiasm = initChiasm();
-    
-    chiasm.config = {
-      layout: {
-        plugin: "layout",
-        state: {
-          layout: {
-            orientation: "horizontal",
-            children: ["a", "b"]
-          }
-        }
-      },
-      a: {
-        plugin: "dummyVis",
-        state: {
-          size: "40px"
-        }
-      },
-      b: {
-        plugin: "dummyVis"
-      }
-    };
-
-    chiasm.getComponent("a").then(function(a){
-      chiasm.getComponent("b").then(function(b){
-        a.when("box", function(box){
-          if(a.size === "40px"){
-            expect(box.width).to.equal(40);
-            expect(b.box.width).to.equal(60);
-            a.size = "55px";
-          } else if(a.size === "55px"){
-            expect(box.width).to.equal(55);
-            expect(b.box.width).to.equal(45);
-            a.size = "75px";
-          } else if(a.size === "75px"){
-            expect(box.width).to.equal(75);
-            expect(b.box.width).to.equal(25);
-            done();
-          }
-        });
-      });
-    });
   });
 });

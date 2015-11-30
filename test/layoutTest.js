@@ -58,7 +58,7 @@ function initChiasm(){
   return chiasm;
 }
 
-describe("plugins/layout", function () {
+describe("chiasm-layout", function () {
   it("should compute size for a single dummyVis", function(done) {
 
     var chiasm = initChiasm();

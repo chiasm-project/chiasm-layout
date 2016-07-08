@@ -45,9 +45,15 @@ function Layout(chiasm){
 
   // Add this guard here so unit tests can run in Node.
   if (typeof window !== "undefined"){
+    
+    var listener = _.throttle(setBox, 100);
 
     // Update `my.box` on resize
-    window.addEventListener("resize", _.throttle(setBox, 100));
+    window.addEventListener("resize", listener);
+    
+    my.destroy = function(){
+      window.removeEventListener("resize", listener);
+    };
   }
   
   // Respond to changes is box and layout.

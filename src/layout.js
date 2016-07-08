@@ -51,7 +51,7 @@ function Layout(chiasm){
     // Update `my.box` on resize
     window.addEventListener("resize", listener);
     
-    model.destroy = function(){
+    my.destroy = function(){
       window.removeEventListener("resize", listener);
     };
   }
